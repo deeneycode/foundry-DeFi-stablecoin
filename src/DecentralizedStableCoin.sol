@@ -8,51 +8,41 @@ import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 /**
  * @title DecentralizedStableCoin
  * @author Deeney
- * 
+ *
  * Collateral: Exogenous (ETH & BTC)
  * Minting: Algorithmic
  * Relative Stability: Pegged to USD
- * 
+ *
  * This is the contract meant to be governed by DSCEngine. This contract is just the ERC20
  * implementation of our stablecoin system.
- * 
+ *
  */
-contract DecentralizedStableCoin is ERC20Burnable, Ownable(0x6C38b0767659E583064E797316E26B342591fddB) {
-    
+contract DecentralizedStableCoin is ERC20Burnable, Ownable(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266) {
     error DecentralizedStableCoin__MustBeMoreThanZero();
     error DecentralizedStableCoin__BurnAmountExceedsBalance();
     error DecentralizedStableCoin__NotZeroAddress();
-  
 
-    constructor()ERC20("DecentralizedStableCoin", "DSC") {}
+    constructor() ERC20("DecentralizedStableCoin", "DSC") {}
 
-        function burn(uint256 _amount) public override onlyOwner {
-            uint256 balance = balanceOf(msg.sender);
-            if(_amount <= 0){
-                revert DecentralizedStableCoin__MustBeMoreThanZero();
-            }
-            if (balance < _amount){
-                revert DecentralizedStableCoin__BurnAmountExceedsBalance();
-            }
-            super.burn(_amount);
+    function burn(uint256 _amount) public override onlyOwner {
+        uint256 balance = balanceOf(msg.sender);
+        if (_amount <= 0) {
+            revert DecentralizedStableCoin__MustBeMoreThanZero();
         }
-
-        function mint(address _to, uint256 _amount) external onlyOwner returns (bool){
-            if(_to == address(0)){
-                revert DecentralizedStableCoin__NotZeroAddress();
-            }
-            if(_amount <= 0) {
-                revert DecentralizedStableCoin__MustBeMoreThanZero();
-            }
-            _mint(_to, _amount);
-            return true;
-
+        if (balance < _amount) {
+            revert DecentralizedStableCoin__BurnAmountExceedsBalance();
         }
-    
+        super.burn(_amount);
+    }
 
-
-
-
-
+    function mint(address _to, uint256 _amount) external onlyOwner returns (bool) {
+        if (_to == address(0)) {
+            revert DecentralizedStableCoin__NotZeroAddress();
+        }
+        if (_amount <= 0) {
+            revert DecentralizedStableCoin__MustBeMoreThanZero();
+        }
+        _mint(_to, _amount);
+        return true;
+    }
 }
-
